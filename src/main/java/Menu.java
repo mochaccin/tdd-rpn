@@ -6,6 +6,7 @@ public class Menu {
 
     public void show() {
         System.out.println("=== Calculadora RPN ===");
+        
         boolean running = true;
 
         while (running) {

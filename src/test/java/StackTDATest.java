@@ -19,7 +19,7 @@ class StackTDATest {
     @Test
     void testDecimalNotAllowed() {
         String expresion = "2.5 3 +";
-        assertThrows(NumberFormatException.class, () -> calculator.evaluate(expresion),
+        assertThrows(IllegalArgumentException.class, () -> calculator.evaluate(expresion),
             "No se permiten decimales en la expresión.");
     }
 
