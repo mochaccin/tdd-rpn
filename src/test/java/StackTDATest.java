@@ -13,153 +13,150 @@ class StackTDATest {
         calculator = new RpnCalculator();
     }
 
-// ----------- Enteros: ya cubiertos en operaciones básicas ----------
+    // ----------- Enteros: ya cubiertos en operaciones básicas ----------
 
-// ----------- Decimales: evaluar que no se puedan usar decimales -----------
- @Test
- void testDecimalNoPermitido() {
-     String expresion = "2.5 3 +";
-     assertThrows(NumberFormatException.class, () -> calculator.evaluate(expresion),
-         "No se permiten decimales en la expresión.");
- }
-    
+    // ----------- Decimales -----------
+    @Test
+    void testDecimalNotAllowed() {
+        String expresion = "2.5 3 +";
+        assertThrows(NumberFormatException.class, () -> calculator.evaluate(expresion),
+            "No se permiten decimales en la expresión.");
+    }
 
-
-    
-
-            // Operaciones básicas
+    // ------------ Operaciones básicas ------------
 
     // Suma correcta
     @Test
-    void testSumaRPN() {
+    void testAddition() {
         String expression = "1 3 +";
-        int result = calculator.calculate(expression);
+        int result = calculator.evaluate(expression);
         assertEquals(4, result, "Suma realizada exitosamente");
     }
 
     // Resta correcta
     @Test
-    void testRestaRPN() {
+    void testSubtraction() {
         String expression = "2 1 -";
-        int result = calculator.calculate(expression);
+        int result = calculator.evaluate(expression);
         assertEquals(1, result, "Resta realizada exitosamente.");
     }
 
     // Multiplicación correcta
     @Test
-    void testMultiplicacionRPN() {
+    void testMultiplication() {
         String expression = "2 2 *";
-        int result = calculator.calculate(expression);
+        int result = calculator.evaluate(expression);
         assertEquals(4, result, "Multiplicación realizada exitosamente.");
     }
 
     // División correcta
     @Test
-    void testDivisionRPN() {
+    void testDivision() {
         String expression = "2 2 /";
-        int result = calculator.calculate(expression);
+        int result = calculator.evaluate(expression);
         assertEquals(1, result, "División realizada exitosamente.");
     }
 
-
-     // ----------- Muy grande -----------
+    // ----------- Muy grande -----------
     @Test
-    void testNumeroMuyGrandeRPN() {
+    void testVeryLargeNumber() {
         String expresion = "2147483647 1 -"; 
         int result = calculator.evaluate(expresion);
         assertEquals(2147483646, result, "Número muy grande evaluado correctamente.");
     }
 
-
-
-            // Muy pequeño    
+    // ----------- Muy pequeño -----------
     @Test
-    void testNumeroMuyPequenoRPN() {
+    void testVerySmallNumber() {
         String expresion = "-2147483648 1 +"; // Integer.MIN_VALUE
         int result = calculator.evaluate(expresion);
         assertEquals(-2147483647, result, "Número muy pequeño evaluado correctamente.");
     }
 
-    
-
-            // División por 0
-
-
-            // Caracteres invalidos
+    // ----------- División por 0 -----------
 
     @Test
-    void testExpresionCorrectaRPN() {
+    void testDivisionByZero() {
+        String expresion = "5 0 /";
+        assertThrows(ArithmeticException.class, () -> calculator.evaluate(expresion),
+            "No se puede dividir por cero.");
+    }
+
+    // ----------- Caracteres inválidos -----------
+
+    @Test
+    void testValidExpression() {
         String expresion = "3 5 3 * +";
         int result = calculator.evaluate(expresion);
         assertEquals(18, result, "Se ingresó la expresión correctamente.");
     }
 
     @Test
-    void testExpresionInvalidaRPN() {
+    void testInvalidExpression() {
         String expresion = "3 + *";
         assertFalse(calculator.isValidExpression(expresion), "Expresión inválida detectada.");
     }
-    
+
     // Expresión debe tener operadores
     @Test
-    void testExpresionSoloOperandosRPN() {
+    void testExpressionWithoutOperators() {
         String expresion = "3 4 5";
         assertFalse(calculator.isValidExpression(expresion), "Ingresaste una expresión sin operandos.");
     }
 
     // Expresión debe tener números
     @Test
-    void testExpresionSinOperandosRPN() {
+    void testExpressionWithoutNumbers() {
         String expresion = "+ - * /";
         assertFalse(calculator.isValidExpression(expresion), "Ingresaste una expresión sin numeros.");
     }
 
     // Expresión usa carácteres válidos
     @Test
-    void testCaracteresValidosRPN() {
+    void testValidCharacters() {
         String expresion = "3 5 2 * +";
         assertTrue(calculator.containsOnlyValidCharacters(expresion), "Caracteres ingresados validos.");
     }
 
     // Expresión usa carácteres inválidos
     @Test
-    void testCaracteresInvalidosRPN() {
+    void testInvalidCharacters() {
         String expresion = "3 5 xa +";
         assertFalse(calculator.containsOnlyValidCharacters(expresion), "Ingresaste un carácter inválido.");
     }
-    
-            // Control de la pila
+
+    // ----------- Control de la pila -----------
 
     @Test
-    void testPilaVacia() {
+    void testStackIsEmpty() {
         assertTrue(stack.isEmpty(), "La pila está vacía.");
     }
 
     @Test
-    void testAgregarElemento() {
+    void testPushElementToStack() {
         stack.push(1);
         assertFalse(stack.isEmpty(), "Se agrego un elemento a la pila exitosamente.");
     }
 
     @Test
-    void testExtraerElemento() {
+    void testPopElementFromStack() {
         stack.push(1);
         int elemento = stack.pop();
         assertEquals(1, elemento, "Se extrajo último elemento de la pila exitosamente.");
     }
 
     @Test
-    void testObtenerElemento() {
+    void testPeekElementFromStack() {
         stack.push(69);
         int elemento = stack.peek();
         assertEquals(69, elemento, "Se obtuvo el último elemento de la pila exitosamente.");
     }
 
-            // Expresión compleja
-    // Una expresión que tenga al menos los 4 operandos en un stack
-
-
-    
-
+    // ----------- Expresión compleja -----------
+    @Test
+    void testComplexExpression() {
+        String expresion = "15 7 1 1 + - / 3 * 2 1 1 + + -"; // equivalente a (15 / (7 - (1 + 1))) * 3 - (2 + (1 + 1)) = 5
+        int result = calculator.evaluate(expresion);
+        assertEquals(5, result, "Expresión compleja evaluada correctamente.");
+    }
 }
-
