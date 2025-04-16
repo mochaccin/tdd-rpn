@@ -6,11 +6,13 @@ public class Menu {
 
     public void show() {
         System.out.println("=== Calculadora RPN ===");
-        
+        System.out.print("\nIngrese expresión RPN separando cada número u operando por un espacio: ");
         boolean running = true;
 
         while (running) {
-            System.out.print("\nIngrese expresión RPN (o 'salir' para terminar): ");
+            System.out.println("\nEscriba 'salir' para terminar la ejecución");
+            
+            System.out.print("\nExpresión RPN : ");
             String input = scanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("salir")) {

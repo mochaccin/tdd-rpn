@@ -1,6 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 
 class StackTDATest {
@@ -28,9 +28,9 @@ class StackTDATest {
     // Suma correcta
     @Test
     void testAddition() {
-        String expression = "1 3 +";
+        String expression = "134 3 +";
         int result = calculator.evaluate(expression);
-        assertEquals(4, result, "Suma realizada exitosamente");
+        assertEquals(137, result, "Suma realizada exitosamente");
     }
 
     // Resta correcta
@@ -67,11 +67,13 @@ class StackTDATest {
 
     // ----------- Muy pequeño -----------
     @Test
-    void testVerySmallNumber() {
+    void testNegativeNumberNotAllowed() {
         String expresion = "-2147483648 1 +"; // Integer.MIN_VALUE
-        int result = calculator.evaluate(expresion);
-        assertEquals(-2147483647, result, "Número muy pequeño evaluado correctamente.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            calculator.evaluate(expresion);
+        }, "Debe lanzar excepción al usar números negativos.");
     }
+
 
     // ----------- División por 0 -----------
 

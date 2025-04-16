@@ -1,8 +1,17 @@
 public class RpnCalculator {
 
     public int evaluate(String expression) {
+
+        if (containsDecimalNumber(expression)) {
+            throw new NumberFormatException("No se permiten decimales.");
+        }
+
         if (!containsOnlyValidCharacters(expression)) {
             throw new IllegalArgumentException("Expresión contiene caracteres inválidos.");
+        }
+
+        if (containsNegativeNumber(expression)) {
+            throw new IllegalArgumentException("Solo se permiten números positivos.");
         }
 
         if (!isValidExpression(expression)) {
@@ -17,11 +26,7 @@ public class RpnCalculator {
                 int number = Integer.parseInt(token);
                 stack.push(number);
             } catch (NumberFormatException e) {
-                if (token.contains(".")) {
-                    throw new NumberFormatException("No se permiten decimales.");
-                }
-
-                // operador
+            
                 int b = stack.pop();
                 int a = stack.pop();
                 switch (token) {
@@ -29,7 +34,7 @@ public class RpnCalculator {
                     case "-" -> stack.push(a - b);
                     case "*" -> stack.push(a * b);
                     case "/" -> {
-                        if (b == 0) throw new ArithmeticException("División por cero.");
+                        if (b == 0) throw new ArithmeticException("No se puede realizar una división por cero.");
                         stack.push(a / b);
                     }
                     default -> throw new IllegalArgumentException("Operador inválido: " + token);
@@ -46,21 +51,42 @@ public class RpnCalculator {
         int operatorCount = 0;
 
         for (String token : tokens) {
-            if (token.matches("-?\\d+")) {
+            if (token.matches("\\d+")) {
                 operandCount++;
             } else if (token.matches("[+\\-*/]")) {
                 operatorCount++;
                 if (operandCount < 2) return false;
-                operandCount--; 
+                operandCount--;
             } else {
                 return false;
             }
         }
 
-        return operandCount == 1;
+        return operandCount == 1 && operatorCount > 0;
     }
+    
 
     public boolean containsOnlyValidCharacters(String expression) {
-        return expression.matches("[\\d+\\-*/\\s]+");
+        return expression.matches("[\\d+\\-*/\\s.,]+");
+    }
+
+    public boolean containsDecimalNumber(String expression) {
+        String[] tokens = expression.trim().split("\\s+");
+        for (String token : tokens) {
+            if (token.contains(".") || token.contains(",")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsNegativeNumber(String expression) {
+        String[] tokens = expression.trim().split("\\s+");
+        for (String token : tokens) {
+            if (token.matches("-\\d+")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
